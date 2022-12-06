@@ -1,0 +1,156 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<a class="btn btn-primary" id="btnYeniEkle">Yeni Ekle</a>
+<table id="tablo">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Location</th>
+            <th>Company Name</th>
+            <th>Position</th>
+            <th>Description</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+
+</table>
+
+
+<div class="modal fade" id="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">Tecrübe Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 row">
+                    <label for="inputName" class="col-4 col-form-label">Company Name</label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtCompanyName" placeholder="Company name">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="inputName" class="col-4 col-form-label">Location</label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtLocation" placeholder="Location">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="inputName" class="col-4 col-form-label">Position</label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtPosition" placeholder="Position">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="inputName" class="col-4 col-form-label">Description</label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="txtDescription" placeholder="Description">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="inputName" class="col-4 col-form-label">Start Date</label>
+                    <div class="col-8">
+                        <input type="date" class="form-control" id="dateStartDate" placeholder="Start Date">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="inputName" class="col-4 col-form-label">End Date</label>
+                    <div class="col-8">
+                        <input type="date" class="form-control" id="dateEndDate" placeholder="End Date">
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="button" id="btnKaydet" class="btn btn-primary">Kaydet</button>
+                <button type="button" id="btnGuncelle" class="btn btn-primary">Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $("#btnYeniEkle").click(function () {
+            $("#modal").modal('show');
+            $("#btnGuncelle").hide();
+        });
+
+
+        $("#btnKaydet").click(function () {
+
+            var veri = {
+                companyName: $("#txtCompanyName").val(),
+                location: $("#txtLocation").val(),
+                position: $("#txtPosition").val(),
+                description: $("#txtDescription").val(),
+                startDate: $("#dateStartDate").val(),
+                endDate: $("#dateEndDate").val()
+            };
+
+            $.ajax({
+                url: "@Url.Action("Add","Experience")",
+                type: "POST",
+                data: veri,
+                success: function (res) {
+                    $("#modal").modal('hide');
+                    DataTable.ajax.reload();
+                }
+            });
+
+
+
+
+        });
+
+
+
+
+        var DataTable = $("#tablo").DataTable({
+            ajax: "@Url.Action("GetAll","Experience")",
+            columns: [
+                { data: 'id' },
+                { data: 'location' },
+                { data: 'companyName' },
+                { data: 'position' },
+                { data: 'description' },
+                { data: 'startDate' },
+                { data: 'endDate' },
+                {
+                    data: 'id', render: function (data) {
+                        return `<a class="btn btn-danger">Sil</a>`
+                    }
+                }
+            ],
+
+            columnDefs: [
+                {
+                    target: 5,
+                    render: DataTable.render.date(),
+                },
+                {
+                    target: 6,
+                    render: DataTable.render.date(),
+                },
+                
+
+            ],
+
+        });
+
+
+    </script>
+}

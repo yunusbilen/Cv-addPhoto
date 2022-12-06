@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container">
+
+    <img id="imgProfile" style="height:100px;width:100px;" alt="Yuklenecek foto" />
+    <input type="text" style="display:none" id="txtImage" />
+    <div class="mb-3 row">
+        <label for="inputName" class="col-4 col-form-label">Profile Picture</label>
+        <div class="col-8">
+            <input type="file" class="form-control" name="inputName" id="dosya" placeholder="Name">
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        <div class="offset-sm-4 col-sm-8">
+            <a class="btn btn-primary">Kaydet</a>
+        </div>
+    </div>
+
+</div>
+@section Scripts{
+    <script type="text/javascript">
+
+        $("#dosya").change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    runAjax(e.target.result)
+                }
+                reader.readAsDataURL(this.files[0]);
+                //console.log(this.files[0]);
+            }
+        })
+        function runAjax(imgBase64) {
+            $.ajax({
+                url: "@Url.Action("ImageSave","Profile")",
+                type: "POST",
+                data: { imgBase64: imgBase64 },
+                success: function () {
+                    alert("başarılı")
+                    console.log(imgBase64);
+                }
+            })
+        }
+
+
+
+    </script>
+}
